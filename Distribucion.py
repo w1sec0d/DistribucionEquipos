@@ -20,6 +20,7 @@ class Facultad():
     def __init__(self, nombre: str, estudiantes=0, computadores=0, laptops=0, tablets=0):
         self.nombre = nombre
         self.estudiantes = estudiantes
+        # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
         self.equipos = [0, 0, 0]
         self.estudiantesSinEquipo = self.estudiantes - \
             (sum(self.equipos))
@@ -27,6 +28,7 @@ class Facultad():
 
 class Universidad():
     def __init__(self, facultades: list):
+        # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
         self.equipos = [0, 0, 0]
         # Array en el que se ordenan las facultades de mayor numero de estudiantes sin equipo a menor numero de estudiantes sin equipo
         self.facultades = sorted(
@@ -91,4 +93,5 @@ while True:
                 print(facultad.equipos)
     elif instruccion == "Imprimir":
         for facultad in universidadPrueba.facultades:
-            print(f"{facultad.nombre}")
+            print(
+                f"{facultad.nombre} {facultad.estudiantesSinEquipo} - Computers {facultad.equipos[0]} Laptops {facultad.equipos[1]} Tablets {facultad.equipos[2]}")
