@@ -92,7 +92,6 @@ while True:
                             facultad.equipos[i] += 1
                         if facultad.estudiantesSinEquipo == 0:
                             break
-                print(facultad.equipos)
     elif instruccion == "Imprimir":
         for facultad in universidadPrueba.facultades:
             print(
