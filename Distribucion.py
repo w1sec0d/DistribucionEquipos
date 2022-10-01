@@ -90,5 +90,5 @@ while True:
                             break
                 print(facultad.equipos)
     elif instruccion == "Imprimir":
-
-        print("")
+        for facultad in universidadPrueba.facultades:
+            print(f"{facultad.nombre}")
