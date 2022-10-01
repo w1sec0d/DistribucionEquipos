@@ -17,7 +17,7 @@ class Cola():
 
 
 class Facultad():
-    def __init__(self, nombre: str, estudiantes=0, computadores=0, laptops=0, tablets=0):
+    def __init__(self, nombre: str, estudiantes=0):
         self.nombre = nombre
         self.estudiantes = estudiantes
         # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
@@ -69,14 +69,16 @@ universidadPrueba = Universidad([Ingenieria, Humanas, Artes, Medicina])
 # While para recibir instrucciones de manera indefinida
 while True:
     instruccion = input()
+    # Si la instruccion es lote, se guarda en una Cola de lotes
     if instruccion.split()[0] == "Lote":
         lote = listarNumeros(instruccion)
         lotes.añadir(lote)
 
     elif instruccion == "Distribuir lote":
         lote = lotes.extraer()
-        # mientras el lote no esté vacío y los estudiantes sin equipo sean mayores a 1, se sigue repartiendo
+        # mientras el lote no esté vacío y los estudiantes sin equipo de la universidad sean mayores a 0, se sigue repartiendo equipos
         while lote != [0, 0, 0] and universidadPrueba.estudiantesSinEquipo > 0:
+            # Se recorre cada facultad, en el orden de prioridad
             for facultad in universidadPrueba.facultades:
                 if facultad.estudiantesSinEquipo == 0 or lote == [0, 0, 0]:
                     break
