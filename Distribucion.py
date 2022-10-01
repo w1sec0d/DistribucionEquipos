@@ -17,8 +17,9 @@ class Cola():
 
 
 class Facultad():
-    def __init__(self, nombre: str, estudiantes=0):
+    def __init__(self, nombre: str, numero: int, estudiantes=0):
         self.nombre = nombre
+        self.numero = numero
         self.estudiantes = estudiantes
         # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
         self.equipos = [0, 0, 0]
@@ -26,13 +27,22 @@ class Facultad():
             (sum(self.equipos))
 
 
+def ordenarFacultades(facultades: list, impresionFinal=False) -> list:
+    if not(impresionFinal):
+        arrayReordenado = sorted(
+            facultades, key=lambda facultad: (facultad.estudiantesSinEquipo, -facultad.numero), reverse=True)
+    else:
+        arrayReordenado = sorted(
+            facultades, key=lambda facultad: (-facultad.estudiantesSinEquipo, -facultad.numero), reverse=True)
+    return arrayReordenado
+
+
 class Universidad():
     def __init__(self, facultades: list):
         # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
         self.equipos = [0, 0, 0]
         # Array en el que se ordenan las facultades de mayor numero de estudiantes sin equipo a menor numero de estudiantes sin equipo
-        self.facultades = sorted(
-            facultades, key=lambda x: x.estudiantesSinEquipo, reverse=True)
+        self.facultades = ordenarFacultades(facultades)
         self.estudiantesSinEquipo = self.facultades[0].estudiantesSinEquipo + \
             self.facultades[1].estudiantesSinEquipo + \
             self.facultades[2].estudiantesSinEquipo + \
@@ -60,15 +70,18 @@ lotes = Cola()
 # Se extraen los datos de estudiantes y se guardan en los objetos facultad y universidad
 
 listaCantidadEstudiantes = listarNumeros(input(""))
-Ingenieria = Facultad("Ingenieria", listaCantidadEstudiantes[0])
-Humanas = Facultad("Humanas", listaCantidadEstudiantes[1])
-Artes = Facultad("Artes", listaCantidadEstudiantes[2])
-Medicina = Facultad("Medicina", listaCantidadEstudiantes[3])
+Ingenieria = Facultad("Ingenieria", 0, listaCantidadEstudiantes[0])
+Humanas = Facultad("Humanas", 1, listaCantidadEstudiantes[1])
+Artes = Facultad("Artes", 3, listaCantidadEstudiantes[2])
+Medicina = Facultad("Medicina", 2, listaCantidadEstudiantes[3])
 universidadPrueba = Universidad([Ingenieria, Humanas, Artes, Medicina])
 
 # While para recibir instrucciones de manera indefinida
 while True:
-    instruccion = input()
+    try:
+        instruccion = input()
+    except:
+        break
     # Si la instruccion es lote, se guarda en una Cola de lotes
     if instruccion.split()[0] == "Lote":
         lote = listarNumeros(instruccion)
@@ -76,6 +89,7 @@ while True:
 
     elif instruccion == "Distribuir lote":
         lote = lotes.extraer()
+        tipoDeEquipoAEntregar = 0
         # mientras el lote no esté vacío y los estudiantes sin equipo de la universidad sean mayores a 0, se sigue repartiendo equipos
         while lote != [0, 0, 0] and universidadPrueba.estudiantesSinEquipo > 0:
             # Se recorre cada facultad, en el orden de prioridad
@@ -85,14 +99,21 @@ while True:
                 # Por cada ciclo se reparte de a un equipo y se revisa la condicion inicial
                 while lote != [0, 0, 0] and facultad.estudiantesSinEquipo > 0:
                     for i in range(0, len(lote)):
+                        if tipoDeEquipoAEntregar > 0:
+                            tipoDeEquipoAEntregar -= 1
+                            continue
+
+                        if facultad.estudiantesSinEquipo == 0:
+                            tipoDeEquipoAEntregar = i
+                            break
                         if lote[i] > 0:
                             lote[i] -= 1
                             facultad.estudiantesSinEquipo -= 1
                             universidadPrueba.estudiantesSinEquipo -= 1
                             facultad.equipos[i] += 1
-                        if facultad.estudiantesSinEquipo == 0:
-                            break
     elif instruccion == "Imprimir":
+        universidadPrueba.facultades = ordenarFacultades(
+            universidadPrueba.facultades, impresionFinal=True)
         for facultad in universidadPrueba.facultades:
             print(
                 f"{facultad.nombre} {facultad.estudiantesSinEquipo} - Computers {facultad.equipos[0]} Laptops {facultad.equipos[1]} Tablets {facultad.equipos[2]}")
