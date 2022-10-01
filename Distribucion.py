@@ -22,9 +22,9 @@ class Facultad():
         self.numero = numero
         self.estudiantes = estudiantes
         # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
-        self.equipos = [0, 0, 0]
-        self.estudiantesSinEquipo = self.estudiantes - \
-            (sum(self.equipos))
+        self.equipos = 0
+        self.arrayEquipos = [0, 0, 0]
+        self.estudiantesSinEquipo = self.estudiantes - self.equipos
 
 
 def ordenarFacultades(facultades: list, impresionFinal=False) -> list:
@@ -40,7 +40,8 @@ def ordenarFacultades(facultades: list, impresionFinal=False) -> list:
 class Universidad():
     def __init__(self, facultades: list):
         # Se usa un array de equipos, en que la posicion 0 son computadores, 1 tablets y 2 laptops
-        self.equipos = [0, 0, 0]
+        self.arrayEquipos = [0, 0, 0]
+        self.equipos = 0
         # Array en el que se ordenan las facultades de mayor numero de estudiantes sin equipo a menor numero de estudiantes sin equipo
         self.facultades = ordenarFacultades(facultades)
         self.estudiantesSinEquipo = self.facultades[0].estudiantesSinEquipo + \
@@ -76,44 +77,48 @@ Artes = Facultad("Artes", 3, listaCantidadEstudiantes[2])
 Medicina = Facultad("Medicina", 2, listaCantidadEstudiantes[3])
 universidadPrueba = Universidad([Ingenieria, Humanas, Artes, Medicina])
 
-# While para recibir instrucciones de manera indefinida
-while True:
-    try:
+try:
+    # While para recibir instrucciones de manera indefinida
+    while True:
         instruccion = input()
-    except:
-        break
-    # Si la instruccion es lote, se guarda en una Cola de lotes
-    if instruccion.split()[0] == "Lote":
-        lote = listarNumeros(instruccion)
-        lotes.añadir(lote)
+        # Si la instruccion es lote, se guarda en una Cola de lotes
+        if instruccion.split()[0] == "Lote":
+            lote = listarNumeros(instruccion)
+            lotes.añadir(lote)
 
-    elif instruccion == "Distribuir lote":
-        lote = lotes.extraer()
-        tipoDeEquipoAEntregar = 0
-        # mientras el lote no esté vacío y los estudiantes sin equipo de la universidad sean mayores a 0, se sigue repartiendo equipos
-        while lote != [0, 0, 0] and universidadPrueba.estudiantesSinEquipo > 0:
-            # Se recorre cada facultad, en el orden de prioridad
+        elif instruccion == "Distribuir lote":
+            lote = lotes.extraer()
+            tipoDeEquipoAEntregar = 0
+            # mientras el lote no esté vacío y los estudiantes sin equipo de la universidad sean mayores a 0, se sigue repartiendo equipos
+            while lote != [0, 0, 0] and universidadPrueba.estudiantesSinEquipo > 0:
+                # Se recorre cada facultad, en el orden de prioridad
+                universidadPrueba.facultades = ordenarFacultades(
+                    universidadPrueba.facultades)
+                for facultad in universidadPrueba.facultades:
+                    facultad.arrayEquipos = [0, 0, 0]
+                    if facultad.estudiantesSinEquipo == 0 or lote == [0, 0, 0]:
+                        continue
+                    # Por cada ciclo se reparte de a un equipo y se revisa la condicion inicial
+                    while lote != [0, 0, 0] and facultad.estudiantesSinEquipo > 0:
+                        for i in range(0, len(lote)):
+                            if tipoDeEquipoAEntregar > 0:
+                                tipoDeEquipoAEntregar -= 1
+                                continue
+
+                            if facultad.estudiantesSinEquipo == 0:
+                                tipoDeEquipoAEntregar = i
+                                break
+                            if lote[i] > 0:
+                                lote[i] -= 1
+                                facultad.arrayEquipos[i] += 1
+                                facultad.equipos += 1
+                                facultad.estudiantesSinEquipo -= 1
+                                universidadPrueba.estudiantesSinEquipo -= 1
+        elif instruccion == "Imprimir":
+            universidadPrueba.facultades = ordenarFacultades(
+                universidadPrueba.facultades, impresionFinal=True)
             for facultad in universidadPrueba.facultades:
-                if facultad.estudiantesSinEquipo == 0 or lote == [0, 0, 0]:
-                    break
-                # Por cada ciclo se reparte de a un equipo y se revisa la condicion inicial
-                while lote != [0, 0, 0] and facultad.estudiantesSinEquipo > 0:
-                    for i in range(0, len(lote)):
-                        if tipoDeEquipoAEntregar > 0:
-                            tipoDeEquipoAEntregar -= 1
-                            continue
-
-                        if facultad.estudiantesSinEquipo == 0:
-                            tipoDeEquipoAEntregar = i
-                            break
-                        if lote[i] > 0:
-                            lote[i] -= 1
-                            facultad.estudiantesSinEquipo -= 1
-                            universidadPrueba.estudiantesSinEquipo -= 1
-                            facultad.equipos[i] += 1
-    elif instruccion == "Imprimir":
-        universidadPrueba.facultades = ordenarFacultades(
-            universidadPrueba.facultades, impresionFinal=True)
-        for facultad in universidadPrueba.facultades:
-            print(
-                f"{facultad.nombre} {facultad.estudiantesSinEquipo} - Computers {facultad.equipos[0]} Laptops {facultad.equipos[1]} Tablets {facultad.equipos[2]}")
+                print(
+                    f"{facultad.nombre} {facultad.estudiantesSinEquipo} - Computers {facultad.arrayEquipos[0]} Laptops {facultad.arrayEquipos[1]} Tablets {facultad.arrayEquipos[2]}")
+except:
+    pass
