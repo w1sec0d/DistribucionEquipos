@@ -62,9 +62,9 @@ lotes = Cola()
 listaCantidadEstudiantes = listarNumeros(input(""))
 Ingenieria = Facultad("Ingenieria", listaCantidadEstudiantes[0])
 Humanas = Facultad("Humanas", listaCantidadEstudiantes[1])
-Medicina = Facultad("Medicina", listaCantidadEstudiantes[2])
-Artes = Facultad("Artes", listaCantidadEstudiantes[3])
-universidadPrueba = Universidad([Ingenieria, Humanas, Medicina, Artes])
+Artes = Facultad("Artes", listaCantidadEstudiantes[2])
+Medicina = Facultad("Medicina", listaCantidadEstudiantes[3])
+universidadPrueba = Universidad([Ingenieria, Humanas, Artes, Medicina])
 
 # While para recibir instrucciones de manera indefinida
 while True:
