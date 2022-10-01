@@ -27,13 +27,16 @@ class Facultad():
         self.estudiantesSinEquipo = self.estudiantes - self.equipos
 
 
+# Orderna a la lista de facultades, dependiendo de si se necesita el orden de repartición o de impresión
 def ordenarFacultades(facultades: list, impresionFinal=False) -> list:
     if not(impresionFinal):
+        # De mayor numero de estudiantes sin equipo a menor
         arrayReordenado = sorted(
             facultades, key=lambda facultad: (facultad.estudiantesSinEquipo, -facultad.numero), reverse=True)
     else:
         arrayReordenado = sorted(
             facultades, key=lambda facultad: (-facultad.estudiantesSinEquipo, -facultad.numero), reverse=True)
+
     return arrayReordenado
 
 
